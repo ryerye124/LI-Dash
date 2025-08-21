@@ -7,8 +7,8 @@
       margin: 0;
       background: #111;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 50vh);
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(3, 50vh);
       gap: 5px;
     }
     iframe {
@@ -20,13 +20,13 @@
 </head>
 <body>
   <!-- Weather Radar -->
-  <iframe src="https://embed.windy.com/embed2/?lat=40.7&lon=-73.5&zoom=7&overlay=radar"></iframe>
+  <iframe src="https://radar.weather.gov/ridge/standard/KOKX_loop.gif"></iframe>
   
   <!-- Traffic Map -->
-  <iframe src="https://511ny.org/map#cams"></iframe>
+  <iframe src="https://www.star.nesdis.noaa.gov/GOES/sector_band.php?sat=G19&sector=ne&band=GEOCOLOR&length=24"></iframe>
   
-  <!-- Rain Totals -->
-  <iframe src="https://water.weather.gov/precip/"></iframe>
+  <!-- Power  Outages -->
+  <iframe src="https://mypowermap.psegliny.com/external/default.html"></iframe>
   
   <!-- Wind Map -->
   <iframe src="https://embed.windy.com/embed2/?lat=40.7&lon=-73.5&zoom=7&overlay=wind"></iframe>
