@@ -10,21 +10,23 @@
       margin-top: 50px; /* space for title bar */
     }
 
-    /* Title Bar */
+    /* Military-style Title Bar */
     #title-bar {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       background: #222;
-      color: #fff;
-      font-size: 16px;
+      color: #0f0; /* military green */
+      font-family: 'Courier New', Courier, monospace; /* military/monospace style */
+      font-size: 18px;
       font-weight: bold;
       padding: 10px 20px;
       z-index: 100;
       display: flex;
-      justify-content: center;
-      gap: 30px;
+      justify-content: space-between; /* stretch across screen */
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     /* Grid Layout */
@@ -64,7 +66,8 @@
 <body>
   <!-- Title Bar -->
   <div id="title-bar">
-    <span id="zulu-time"></span> | <span id="est-time"></span>
+    <span id="zulu-time"></span>
+    <span id="est-time"></span>
   </div>
 
   <!-- Dashboard Grid -->
@@ -78,7 +81,7 @@
     <!-- Satellite (NE) - Fixed to direct GIF -->
     <div class="panel">
       <span class="label">Satellite (NE)</span>
-      <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/FD/GEOCOLOR/latest.gif"></iframe>
+      <iframe src="https://www.star.nesdis.noaa.gov/GOES/sector_band.php?sat=G19&sector=ne&band=GEOCOLOR&length=24&refresh=true"></iframe>
     </div>
 
     <!-- Power Outages -->
