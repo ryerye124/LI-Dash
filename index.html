@@ -17,7 +17,7 @@
       left: 0;
       width: 100%;
       background: #222;
-      color: #0f0;
+      color: #0f0; /* military green */
       font-family: 'Courier New', Courier, monospace;
       font-size: 18px;
       font-weight: bold;
@@ -42,9 +42,8 @@
       position: relative;
       width: 100%;
       height: 100%;
-      cursor: pointer;
-      transition: all 0.3s ease;
       overflow: hidden;
+      transition: all 0.3s ease;
     }
 
     .panel iframe {
@@ -54,19 +53,33 @@
       transition: all 0.3s ease;
     }
 
+    /* Labels */
     .label {
       position: absolute;
       top: 5px;
       left: 5px;
       background: rgba(0,0,0,0.85);
-      color: #fff;
+      color: #0f0; /* military green */
       padding: 5px 10px;
       font-size: 15px;
       font-weight: bold;
       border-radius: 5px;
       z-index: 10;
-      pointer-events: none;
       text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    /* Hover Effects */
+    .label:hover {
+      color: #fff;
+      background: rgba(0,255,0,0.9);
+      transform: scale(1.05);
+    }
+
+    .panel:hover {
+      box-shadow: 0 0 15px #0f0;
+      transition: box-shadow 0.3s ease;
     }
 
     /* Fullscreen panel style */
@@ -123,10 +136,8 @@
     function updateTime() {
       const now = new Date();
 
-      // Zulu / UTC
       const zulu = now.toISOString().replace('T', ' ').split('.')[0] + " Z";
 
-      // Eastern Time
       const estOptions = { timeZone: 'America/New_York', hour12: false };
       const est = now.toLocaleString('en-US', estOptions);
 
@@ -135,22 +146,25 @@
     }
 
     setInterval(updateTime, 1000);
-    updateTime(); // initial call
+    updateTime();
   </script>
 
-  <!-- Click to enlarge script -->
+  <!-- Click label to fullscreen & Esc to exit -->
   <script>
     const panels = document.querySelectorAll('.panel');
-    panels.forEach(panel => {
-      panel.addEventListener('click', () => {
-        // Remove fullscreen from any other panel
-        panels.forEach(p => {
-          if (p !== panel) p.classList.remove('fullscreen');
-        });
 
-        // Toggle fullscreen on clicked panel
-        panel.classList.toggle('fullscreen');
+    panels.forEach(panel => {
+      const label = panel.querySelector('.label');
+      label.addEventListener('click', (e) => {
+        e.stopPropagation();
+        panel.classList.add('fullscreen');
       });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        panels.forEach(panel => panel.classList.remove('fullscreen'));
+      }
     });
   </script>
 
