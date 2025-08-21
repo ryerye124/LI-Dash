@@ -17,36 +17,41 @@
       left: 0;
       width: 100%;
       background: #222;
-      color: #0f0; /* military green */
-      font-family: 'Courier New', Courier, monospace; /* military/monospace style */
+      color: #0f0;
+      font-family: 'Courier New', Courier, monospace;
       font-size: 18px;
       font-weight: bold;
-      padding: 10px 20px;
+      padding: 10px 40px;
       z-index: 100;
       display: flex;
-      justify-content: space-between; /* stretch across screen */
+      justify-content: space-between;
       text-transform: uppercase;
       letter-spacing: 2px;
     }
 
-    /* Grid Layout */
+    /* Dashboard Grid */
     #dashboard {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(2, 50vh);
       gap: 5px;
+      transition: all 0.3s ease;
     }
 
     .panel {
       position: relative;
       width: 100%;
       height: 100%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      overflow: hidden;
     }
 
-    iframe {
+    .panel iframe {
       width: 100%;
       height: 100%;
       border: none;
+      transition: all 0.3s ease;
     }
 
     .label {
@@ -60,10 +65,25 @@
       font-weight: bold;
       border-radius: 5px;
       z-index: 10;
+      pointer-events: none;
+      text-transform: uppercase;
+    }
+
+    /* Fullscreen panel style */
+    .fullscreen {
+      position: fixed !important;
+      top: 50px; /* below title bar */
+      left: 0;
+      width: 100% !important;
+      height: calc(100% - 50px) !important;
+      z-index: 999;
+      grid-column: 1 / -1 !important;
+      grid-row: 1 / -1 !important;
     }
   </style>
 </head>
 <body>
+
   <!-- Title Bar -->
   <div id="title-bar">
     <span id="zulu-time"></span>
@@ -72,33 +92,28 @@
 
   <!-- Dashboard Grid -->
   <div id="dashboard">
-    <!-- Local Radar -->
     <div class="panel">
       <span class="label">Local Radar</span>
       <iframe src="https://radar.weather.gov/ridge/standard/KOKX_loop.gif"></iframe>
     </div>
 
-    <!-- Satellite (NE) - Fixed to direct GIF -->
     <div class="panel">
       <span class="label">Satellite (NE)</span>
       <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/GLM/CONUS/EXTENT3/GOES16-CONUS-EXTENT3-625x375.gif"></iframe>
     </div>
 
-    <!-- Power Outages -->
     <div class="panel">
       <span class="label">Power Outages</span>
       <iframe src="https://mypowermap.psegliny.com/external/default.html"></iframe>
     </div>
 
-    <!-- Wind Map -->
     <div class="panel">
       <span class="label">Wind Map</span>
       <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/DMW/GOES16-ABI-CONUS-DMW.gif"></iframe>
     </div>
 
-    <!-- Current Storm -->
     <div class="panel">
-      <span class="label">Erin</span>
+      <span class="label">Current Storm</span>
       <iframe src="https://cdn.star.nesdis.noaa.gov/FLOATER/AL052025/GEOCOLOR/20252331510-20252332040-ABI-AL052025-GEOCOLOR-1000x1000.gif"></iframe>
     </div>
   </div>
@@ -122,5 +137,22 @@
     setInterval(updateTime, 1000);
     updateTime(); // initial call
   </script>
+
+  <!-- Click to enlarge script -->
+  <script>
+    const panels = document.querySelectorAll('.panel');
+    panels.forEach(panel => {
+      panel.addEventListener('click', () => {
+        // Remove fullscreen from any other panel
+        panels.forEach(p => {
+          if (p !== panel) p.classList.remove('fullscreen');
+        });
+
+        // Toggle fullscreen on clicked panel
+        panel.classList.toggle('fullscreen');
+      });
+    });
+  </script>
+
 </body>
 </html>
