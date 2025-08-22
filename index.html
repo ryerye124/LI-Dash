@@ -12,7 +12,7 @@
     margin-top: 50px;
   }
 
-  /* Military-style Title Bar */
+  /* Title Bar */
   #title-bar {
     position: fixed;
     top: 0;
@@ -20,7 +20,7 @@
     width: 100%;
     background: #222;
     color: #0f0;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Courier New', monospace;
     font-size: 18px;
     font-weight: bold;
     padding: 10px 60px;
@@ -31,7 +31,6 @@
     letter-spacing: 2px;
   }
 
-  /* Alert Ticker */
   #alert-ticker {
     margin: 0 20px;
     color: #ff0;
@@ -65,7 +64,7 @@
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: hidden; /* hide scrollbars */
     transition: all 0.3s ease;
     background: #000;
   }
@@ -75,6 +74,7 @@
     height: 100%;
     border: none;
     transition: all 0.3s ease;
+    object-fit: contain; /* ensures content fully visible */
   }
 
   /* Last cell split (nested sub-grid) */
@@ -129,7 +129,7 @@
   /* Wind Map focus in grid view */
   .panel.wind-map iframe {
     object-fit: cover;
-    object-position: right; /* focus East Coast */
+    object-position: 80% 50%; /* Northeast focus */
   }
 
   /* Reset Wind Map when fullscreen */
@@ -178,17 +178,16 @@
 
   <!-- Last cell split into two small panels -->
   <div class="sub-grid">
-   <!-- Temprature -->
-<div class="panel">
-  <span class="label">Temp</span>
-  <iframe src="https://digital.weather.gov/?zoom=8&lat=40.93187&lon=-73.209&layers=F00BTTTFFTT&region=0&element=0&mxmz=false&barbs=false&subl=TFFFFF&units=english&wunits=nautical&coords=latlon&tunits=localt"></iframe>
-</div>
+    <!-- Hourly Forecast / Temperature -->
+    <div class="panel">
+      <span class="label">Hourly Forecast</span>
+      <iframe src="https://digital.weather.gov/?zoom=8&lat=40.93187&lon=-73.209&layers=F00BTTTFFTT&region=0&element=0&mxmz=false&barbs=false&subl=TFFFFF&units=english&wunits=nautical&coords=latlon&tunits=localt"></iframe>
+    </div>
 
-<!-- Rainfall Accumulation Panel -->
-<div class="panel">
-  <span class="label">Rainfall Accumulation</span>
-  <iframe src="https://www.weather.gov/gid/precipitation" title="Rainfall Accumulation Map"></iframe>
-</div>
+    <!-- Rainfall Accumulation Panel -->
+    <div class="panel">
+      <span class="label">Rainfall Accumulation</span>
+      <iframe src="https://www.weather.gov/gid/precipitation" title="Rainfall Accumulation Map"></iframe>
     </div>
   </div>
 </div>
@@ -261,4 +260,3 @@ document.addEventListener('keydown', (e) => {
 
 </body>
 </html>
-
