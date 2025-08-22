@@ -69,20 +69,12 @@
     background: #000;
   }
 
-  .panel iframe {
+  .panel iframe, .panel img {
     width: 100%;
     height: 100%;
     border: none;
     transition: all 0.3s ease;
-    object-fit: contain; /* ensures content fully visible */
-  }
-
-  /* Last cell split (nested sub-grid) */
-  .sub-grid {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    gap: 5px;
-    height: 100%;
+    object-fit: contain;
   }
 
   /* Labels */
@@ -126,16 +118,36 @@
     background: #000;
   }
 
-  /* Wind Map focus in grid view */
-  .panel.wind-map iframe {
-    object-fit: cover;
-    object-position: 80% 50%; /* Northeast focus */
+  /* Last cell split (nested sub-grid) */
+  .sub-grid {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 5px;
+    height: 100%;
   }
 
-  /* Reset Wind Map when fullscreen */
-  .panel.wind-map.fullscreen iframe {
-    object-fit: contain;
-    object-position: center;
+  /* Cropping container for Wind Map & Lightning */
+  .crop {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .crop iframe, .crop img {
+    position: absolute;
+    top: -50px;     /* adjust vertical focus */
+    left: -150px;   /* adjust horizontal focus */
+    width: 150%;    /* scale to fill panel */
+    height: 150%;
+  }
+
+  /* Reset focus in fullscreen */
+  .panel.wind-map.fullscreen .crop iframe,
+  .panel.lightning.fullscreen .crop iframe {
+    position: static;
+    width: 100%;
+    height: 100%;
   }
 
 </style>
@@ -168,26 +180,27 @@
 
   <div class="panel wind-map">
     <span class="label">Wind Map</span>
-    <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/DMW/GOES16-ABI-CONUS-DMW.gif"></iframe>
+    <div class="crop">
+      <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/DMW/GOES16-ABI-CONUS-DMW.gif"></iframe>
+    </div>
   </div>
 
-  <div class="panel">
+  <div class="panel lightning">
     <span class="label">Lightning</span>
-    <iframe src="https://cdn.star.nesdis.noaa.gov/GOES19/GLM/SECTOR/ne/EXTENT3/20252342156_GOES19-GLM-ne-EXTENT3-1200x1200.jpg"></iframe>
+    <div class="crop">
+      <iframe src="https://cdn.star.nesdis.noaa.gov/GOES19/GLM/SECTOR/ne/EXTENT3/20252342156_GOES19-GLM-ne-EXTENT3-1200x1200.jpg"></iframe>
+    </div>
   </div>
 
   <!-- Last cell split into two small panels -->
   <div class="sub-grid">
-    <!-- Hourly Forecast / Temperature -->
-   <div class="panel">
-  <span class="label">Hourly Forecast</span>
-  <img src="https://forecast.weather.gov/meteograms/Plotter.php?lat=40.73&lon=-73.45&wfo=okx&zcode=NYZ076&gset=14&gdiff=0&unit=0&pop=1&lg=english&mxse=0&wdir=1&icons=1&mt=0&gxsonly=0&gsize=medium"
-       alt="Hourly Forecast"
-       style="width:100%; height:100%; object-fit:contain;">
-</div>
+    <div class="panel">
+      <span class="label">Hourly Forecast</span>
+      <img src="https://forecast.weather.gov/meteograms/Plotter.php?lat=40.73&lon=-73.45&wfo=okx&zcode=NYZ076&gset=14&gdiff=0&unit=0&pop=1&lg=english&mxse=0&wdir=1&icons=1&mt=0&gxsonly=0&gsize=medium"
+           alt="Hourly Forecast"
+           style="width:100%; height:100%; object-fit:contain;">
+    </div>
 
-
-    <!-- Rainfall Accumulation Panel -->
     <div class="panel">
       <span class="label">Rainfall Accumulation</span>
       <iframe src="https://radar.weather.gov/ridge/standard/KOKX_24hr_precip.gif" title="Long Island 24h Precipitation"></iframe>
