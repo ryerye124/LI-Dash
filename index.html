@@ -1,206 +1,260 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Live Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      font-family: Arial, sans-serif;
-      margin-top: 50px; /* space for title bar */
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Dashboard</title>
+<style>
+  body {
+    margin: 0;
+    background: #111;
+    font-family: Arial, sans-serif;
+    margin-top: 50px;
+  }
 
-    /* Military-style Title Bar */
-    #title-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      background: #222;
-      color: #0f0; /* military green */
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 18px;
-      font-weight: bold;
-      padding: 10px 40px;
-      z-index: 100;
-      display: flex;
-      justify-content: space-between;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
+  /* Military-style Title Bar */
+  #title-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #222;
+    color: #0f0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 18px;
+    font-weight: bold;
+    padding: 10px 40px;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
 
-    /* Dashboard Grid */
-    #dashboard {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 50vh);
-      gap: 5px;
-      transition: all 0.3s ease;
-    }
+  /* Alert Ticker */
+  #alert-ticker {
+    margin: 0 20px;
+    color: #ff0;
+    font-family: 'Courier New', monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 40%;
+  }
 
-    .panel {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      transition: all 0.3s ease;
-      background: #000;
-    }
+  .ticker span {
+    display: inline-block;
+    padding-left: 100%;
+    animation: ticker-scroll 20s linear infinite;
+  }
 
-    .panel iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      transition: all 0.3s ease;
-    }
+  @keyframes ticker-scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
 
-    /* Labels */
-    .label {
-      position: absolute;
-      top: 5px;
-      left: 5px;
-      background: rgba(0,0,0,0.85);
-      color: #0f0;
-      padding: 5px 10px;
-      font-size: 15px;
-      font-weight: bold;
-      border-radius: 5px;
-      z-index: 10;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
+  /* Dashboard Grid */
+  #dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 50vh);
+    gap: 5px;
+    transition: all 0.3s ease;
+  }
 
-    /* Hover Effects */
-    .label:hover {
-      color: #fff;
-      background: rgba(0,255,0,0.9);
-      transform: scale(1.05);
-    }
+  .panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: #000;
+  }
 
-    .panel:hover {
-      box-shadow: 0 0 15px #0f0;
-      transition: box-shadow 0.3s ease;
-    }
+  .panel iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    transition: all 0.3s ease;
+  }
 
-    /* Fullscreen panel style */
-    .fullscreen {
-      position: fixed !important;
-      top: 50px; /* below title bar */
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100% !important;
-      height: calc(100% - 50px) !important;
-      z-index: 9999;
-      background: #000;
-    }
+  /* Last cell split (nested sub-grid) */
+  .sub-grid {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 5px;
+    height: 100%;
+  }
 
-    /* Wind Map focus in grid view */
-    .panel.wind-map iframe {
-      object-fit: cover;
-      object-position: right; /* shift to East Coast */
-    }
+  /* Labels */
+  .label {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: rgba(0,0,0,0.85);
+    color: #0f0;
+    padding: 5px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 5px;
+    z-index: 10;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
 
-    /* Reset when fullscreen */
-    .panel.wind-map.fullscreen iframe {
-      object-fit: contain;
-      object-position: center;
-    }
-  </style>
+  .label:hover {
+    color: #fff;
+    background: rgba(0,255,0,0.9);
+    transform: scale(1.05);
+  }
+
+  .panel:hover {
+    box-shadow: 0 0 15px #0f0;
+    transition: box-shadow 0.3s ease;
+  }
+
+  /* Fullscreen panel style */
+  .fullscreen {
+    position: fixed !important;
+    top: 50px;
+    left: 0;
+    width: 100% !important;
+    height: calc(100% - 50px) !important;
+    z-index: 999;
+    grid-column: 1 / -1 !important;
+    grid-row: 1 / -1 !important;
+    background: #000;
+  }
+
+  /* Wind Map focus in grid view */
+  .panel.wind-map iframe {
+    object-fit: cover;
+    object-position: right; /* focus East Coast */
+  }
+
+  /* Reset Wind Map when fullscreen */
+  .panel.wind-map.fullscreen iframe {
+    object-fit: contain;
+    object-position: center;
+  }
+
+</style>
 </head>
 <body>
 
-  <!-- Title Bar -->
-  <div id="title-bar">
-    <span id="zulu-time"></span>
-    <span id="est-time"></span>
+<!-- Title Bar -->
+<div id="title-bar">
+  <span id="zulu-time"></span>
+  <span id="alert-ticker" class="ticker">Loading alerts...</span>
+  <span id="est-time"></span>
+</div>
+
+<!-- Dashboard Grid -->
+<div id="dashboard">
+  <div class="panel">
+    <span class="label">Local Radar</span>
+    <iframe src="https://radar.weather.gov/ridge/standard/KOKX_loop.gif"></iframe>
   </div>
 
-  <!-- Dashboard Grid -->
-  <div id="dashboard">
-    <div class="panel">
-      <span class="label">Local Radar</span>
-      <iframe src="https://radar.weather.gov/ridge/standard/KOKX_loop.gif"></iframe>
-    </div>
-
-    <div class="panel">
-      <span class="label">Satellite (NE)</span>
-      <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/GLM/CONUS/EXTENT3/GOES16-CONUS-EXTENT3-625x375.gif"></iframe>
-    </div>
-
-    <div class="panel">
-      <span class="label">Power Outages</span>
-      <iframe src="https://mypowermap.psegliny.com/external/default.html"></iframe>
-    </div>
-
-    <div class="panel wind-map">
-      <span class="label">Wind Map</span>
-      <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/DMW/GOES16-ABI-CONUS-DMW.gif"></iframe>
-    </div>
-
-    <div class="panel">
-      <span class="label">Current Storm</span>
-      <iframe src="https://cdn.star.nesdis.noaa.gov/FLOATER/AL052025/GEOCOLOR/20252331510-20252332040-ABI-AL052025-GEOCOLOR-1000x1000.gif"></iframe>
-    </div>
-
-    <div class="panel">
-      <span class="label">Accu Weather</span>
-      <iframe src="https://www.accuweather.com/en/videos/accuweather-now/%3Futm_source%3Dconnatix%26utm_medium%3Dshare%26utm_campaign%3Dlink"></iframe>
-    </div>
+  <div class="panel">
+    <span class="label">Satellite (NE)</span>
+    <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/GLM/CONUS/EXTENT3/GOES16-CONUS-EXTENT3-625x375.gif"></iframe>
   </div>
 
-  <!-- Time Script -->
-  <script>
-    function updateTime() {
-      const now = new Date();
+  <div class="panel">
+    <span class="label">Power Outages</span>
+    <iframe src="https://mypowermap.psegliny.com/external/default.html"></iframe>
+  </div>
 
-      const zulu = now.toISOString().replace('T', ' ').split('.')[0] + " Z";
+  <div class="panel wind-map">
+    <span class="label">Wind Map</span>
+    <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/DMW/GOES16-ABI-CONUS-DMW.gif"></iframe>
+  </div>
 
-      const estOptions = { timeZone: 'America/New_York', hour12: false };
-      const est = now.toLocaleString('en-US', estOptions);
+  <div class="panel">
+    <span class="label">Current Storm</span>
+    <iframe src="https://cdn.star.nesdis.noaa.gov/FLOATER/AL052025/GEOCOLOR/20252331510-20252332040-ABI-AL052025-GEOCOLOR-1000x1000.gif"></iframe>
+  </div>
 
-      document.getElementById('zulu-time').textContent = `Zulu Time: ${zulu}`;
-      document.getElementById('est-time').textContent = `EST: ${est}`;
+  <!-- Last cell split into two small panels -->
+  <div class="sub-grid">
+    <div class="panel">
+      <span class="label">Small Panel 1</span>
+      <iframe src="https://www.weather.gov/images/jetstream/synoptic/sfcprog.gif"></iframe>
+    </div>
+    <div class="panel">
+      <span class="label">Small Panel 2</span>
+      <iframe src="https://www.weather.gov/images/jetstream/synoptic/500prog.gif"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- Time Script -->
+<script>
+function updateTime() {
+  const now = new Date();
+  const zulu = now.toISOString().replace('T', ' ').split('.')[0] + " Z";
+  const estOptions = { timeZone: 'America/New_York', hour12: false };
+  const est = now.toLocaleString('en-US', estOptions);
+  document.getElementById('zulu-time').textContent = `Zulu Time: ${zulu}`;
+  document.getElementById('est-time').textContent = `EST: ${est}`;
+}
+setInterval(updateTime, 1000);
+updateTime();
+</script>
+
+<!-- Alert Ticker Script -->
+<script>
+async function fetchAlerts() {
+  try {
+    const response = await fetch('https://api.weather.gov/alerts/active?area=NY');
+    if (!response.ok) return [];
+    const data = await response.json();
+    return data.features.map(f => f.properties.headline);
+  } catch (e) {
+    return [];
+  }
+}
+
+async function updateAlerts() {
+  const alerts = await fetchAlerts();
+  const ticker = document.getElementById('alert-ticker');
+  if (alerts.length === 0) {
+    ticker.textContent = 'No current weather alerts';
+  } else {
+    ticker.innerHTML = `<span>${alerts.join('  •  ')}</span>`;
+  }
+}
+
+setInterval(updateAlerts, 60 * 1000);
+updateAlerts();
+</script>
+
+<!-- Fullscreen Script -->
+<script>
+const panels = document.querySelectorAll('.panel');
+panels.forEach(panel => {
+  const label = panel.querySelector('.label');
+  label.addEventListener('click', (e) => {
+    e.stopPropagation();
+    panels.forEach(p => p.classList.remove('fullscreen'));
+    panel.classList.add('fullscreen');
+  });
+
+  panel.addEventListener('click', () => {
+    if(panel.classList.contains('fullscreen')){
+      panel.classList.remove('fullscreen');
     }
+  });
+});
 
-    setInterval(updateTime, 1000);
-    updateTime();
-  </script>
-
-  <!-- Click label to fullscreen, click anywhere inside or Esc to exit -->
-  <script>
-    const panels = document.querySelectorAll('.panel');
-
-    panels.forEach(panel => {
-      const label = panel.querySelector('.label');
-
-      // Click label → fullscreen
-      label.addEventListener('click', (e) => {
-        e.stopPropagation();
-
-        // First remove fullscreen from all
-        panels.forEach(p => p.classList.remove('fullscreen'));
-
-        // Toggle fullscreen on this one
-        panel.classList.add('fullscreen');
-      });
-
-      // Click anywhere inside panel → exit fullscreen
-      panel.addEventListener('click', () => {
-        if (panel.classList.contains('fullscreen')) {
-          panel.classList.remove('fullscreen');
-        }
-      });
-    });
-
-    // Press Esc → exit fullscreen
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        panels.forEach(panel => panel.classList.remove('fullscreen'));
-      }
-    });
-  </script>
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    panels.forEach(panel => panel.classList.remove('fullscreen'));
+  }
+});
+</script>
 
 </body>
 </html>
+
