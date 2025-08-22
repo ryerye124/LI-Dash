@@ -82,16 +82,18 @@
       transition: box-shadow 0.3s ease;
     }
 
-    /* Fullscreen panel style */
-    .fullscreen {
-      position: fixed !important;
-      top: 50px; /* below title bar */
-      left: 0;
-      width: 200% !important;
-      height: calc(200% - 50px) !important;
-      z-index: 999;
-      grid-column: 1 / -1 !important;
-      grid-row: 1 / -1 !important;
+   /* Fullscreen panel style */
+.fullscreen {
+  position: fixed !important;
+  top: 50px; /* below title bar */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100% !important;
+  height: calc(100% - 50px) !important;
+  z-index: 9999;
+  background: #000; /* optional: keeps it clean */
+}
     }
   </style>
 </head>
@@ -154,24 +156,39 @@
     updateTime();
   </script>
 
-  <!-- Click label to fullscreen & Esc to exit -->
-  <script>
-    const panels = document.querySelectorAll('.panel');
+ <!-- Click label to fullscreen, click anywhere inside or Esc to exit -->
+<script>
+  const panels = document.querySelectorAll('.panel');
 
-    panels.forEach(panel => {
-      const label = panel.querySelector('.label');
-      label.addEventListener('click', (e) => {
-        e.stopPropagation();
-        panel.classList.add('fullscreen');
-      });
+  panels.forEach(panel => {
+    const label = panel.querySelector('.label');
+
+    // Click label → fullscreen
+    label.addEventListener('click', (e) => {
+      e.stopPropagation();
+
+      // First remove fullscreen from all
+      panels.forEach(p => p.classList.remove('fullscreen'));
+
+      // Toggle fullscreen on this one
+      panel.classList.add('fullscreen');
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        panels.forEach(panel => panel.classList.remove('fullscreen'));
+    // Click anywhere inside panel → exit fullscreen
+    panel.addEventListener('click', () => {
+      if (panel.classList.contains('fullscreen')) {
+        panel.classList.remove('fullscreen');
       }
     });
-  </script>
+  });
+
+  // Press Esc → exit fullscreen
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      panels.forEach(panel => panel.classList.remove('fullscreen'));
+    }
+  });
+</script>
 
 </body>
 </html>
