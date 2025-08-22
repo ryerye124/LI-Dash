@@ -44,6 +44,7 @@
       height: 100%;
       overflow: hidden;
       transition: all 0.3s ease;
+      background: #000;
     }
 
     .panel iframe {
@@ -59,7 +60,7 @@
       top: 5px;
       left: 5px;
       background: rgba(0,0,0,0.85);
-      color: #0f0; /* military green */
+      color: #0f0;
       padding: 5px 10px;
       font-size: 15px;
       font-weight: bold;
@@ -82,18 +83,29 @@
       transition: box-shadow 0.3s ease;
     }
 
-   /* Fullscreen panel style */
-.fullscreen {
-  position: fixed !important;
-  top: 50px; /* below title bar */
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100% !important;
-  height: calc(100% - 50px) !important;
-  z-index: 9999;
-  background: #000; /* optional: keeps it clean */
-}
+    /* Fullscreen panel style */
+    .fullscreen {
+      position: fixed !important;
+      top: 50px; /* below title bar */
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100% !important;
+      height: calc(100% - 50px) !important;
+      z-index: 9999;
+      background: #000;
+    }
+
+    /* Wind Map focus in grid view */
+    .panel.wind-map iframe {
+      object-fit: cover;
+      object-position: right; /* shift to East Coast */
+    }
+
+    /* Reset when fullscreen */
+    .panel.wind-map.fullscreen iframe {
+      object-fit: contain;
+      object-position: center;
     }
   </style>
 </head>
@@ -122,7 +134,7 @@
       <iframe src="https://mypowermap.psegliny.com/external/default.html"></iframe>
     </div>
 
-    <div class="panel">
+    <div class="panel wind-map">
       <span class="label">Wind Map</span>
       <iframe src="https://cdn.star.nesdis.noaa.gov/GOES16/ABI/CONUS/DMW/GOES16-ABI-CONUS-DMW.gif"></iframe>
     </div>
@@ -132,7 +144,7 @@
       <iframe src="https://cdn.star.nesdis.noaa.gov/FLOATER/AL052025/GEOCOLOR/20252331510-20252332040-ABI-AL052025-GEOCOLOR-1000x1000.gif"></iframe>
     </div>
 
-     <div class="panel">
+    <div class="panel">
       <span class="label">Accu Weather</span>
       <iframe src="https://www.accuweather.com/en/videos/accuweather-now/%3Futm_source%3Dconnatix%26utm_medium%3Dshare%26utm_campaign%3Dlink"></iframe>
     </div>
@@ -156,39 +168,39 @@
     updateTime();
   </script>
 
- <!-- Click label to fullscreen, click anywhere inside or Esc to exit -->
-<script>
-  const panels = document.querySelectorAll('.panel');
+  <!-- Click label to fullscreen, click anywhere inside or Esc to exit -->
+  <script>
+    const panels = document.querySelectorAll('.panel');
 
-  panels.forEach(panel => {
-    const label = panel.querySelector('.label');
+    panels.forEach(panel => {
+      const label = panel.querySelector('.label');
 
-    // Click label → fullscreen
-    label.addEventListener('click', (e) => {
-      e.stopPropagation();
+      // Click label → fullscreen
+      label.addEventListener('click', (e) => {
+        e.stopPropagation();
 
-      // First remove fullscreen from all
-      panels.forEach(p => p.classList.remove('fullscreen'));
+        // First remove fullscreen from all
+        panels.forEach(p => p.classList.remove('fullscreen'));
 
-      // Toggle fullscreen on this one
-      panel.classList.add('fullscreen');
+        // Toggle fullscreen on this one
+        panel.classList.add('fullscreen');
+      });
+
+      // Click anywhere inside panel → exit fullscreen
+      panel.addEventListener('click', () => {
+        if (panel.classList.contains('fullscreen')) {
+          panel.classList.remove('fullscreen');
+        }
+      });
     });
 
-    // Click anywhere inside panel → exit fullscreen
-    panel.addEventListener('click', () => {
-      if (panel.classList.contains('fullscreen')) {
-        panel.classList.remove('fullscreen');
+    // Press Esc → exit fullscreen
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        panels.forEach(panel => panel.classList.remove('fullscreen'));
       }
     });
-  });
-
-  // Press Esc → exit fullscreen
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      panels.forEach(panel => panel.classList.remove('fullscreen'));
-    }
-  });
-</script>
+  </script>
 
 </body>
 </html>
