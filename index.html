@@ -127,28 +127,36 @@
   }
 
   /* Cropping container for Wind Map & Lightning */
-  .crop {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-  }
+.crop {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
 
-  .crop iframe, .crop img {
-    position: absolute;
-    top: -50px;     /* adjust vertical focus */
-    left: -150px;   /* adjust horizontal focus */
-    width: 150%;    /* scale to fill panel */
-    height: 150%;
-  }
+.panel.wind-map .crop iframe {
+  position: absolute;
+  top: -100px;    /* vertical crop */
+  left: -350px;   /* horizontal crop */
+  width: 200%;    /* scale to fill panel */
+  height: 200%;
+}
 
-  /* Reset focus in fullscreen */
-  .panel.wind-map.fullscreen .crop iframe,
-  .panel.lightning.fullscreen .crop iframe {
-    position: static;
-    width: 100%;
-    height: 100%;
-  }
+.panel.lightning .crop iframe {
+  position: absolute;
+  top: -100px;    /* vertical crop */
+  left: -200px;   /* horizontal crop */
+  width: 180%;    /* scale to fill panel */
+  height: 180%;
+}
+
+/* Reset focus in fullscreen */
+.panel.wind-map.fullscreen .crop iframe,
+.panel.lightning.fullscreen .crop iframe {
+  position: static;
+  width: 100%;
+  height: 100%;
+}
 
 </style>
 </head>
